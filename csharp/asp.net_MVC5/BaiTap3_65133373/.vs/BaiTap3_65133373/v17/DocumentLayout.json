@@ -1,0 +1,88 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\dev\\cs\\BaiTap3_65133373\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5CECC452-2660-468C-BB23-0E80071CCCBC}|BaiTap3_65133373.csproj|d:\\dev\\cs\\baitap3_65133373\\views\\nhanvien_65133373\\confirm.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5CECC452-2660-468C-BB23-0E80071CCCBC}|BaiTap3_65133373.csproj|solutionrelative:views\\nhanvien_65133373\\confirm.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5CECC452-2660-468C-BB23-0E80071CCCBC}|BaiTap3_65133373.csproj|D:\\dev\\cs\\BaiTap3_65133373\\controllers\\nhanvien_65133373controller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5CECC452-2660-468C-BB23-0E80071CCCBC}|BaiTap3_65133373.csproj|solutionrelative:controllers\\nhanvien_65133373controller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5CECC452-2660-468C-BB23-0E80071CCCBC}|BaiTap3_65133373.csproj|d:\\dev\\cs\\baitap3_65133373\\views\\nhanvien_65133373\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5CECC452-2660-468C-BB23-0E80071CCCBC}|BaiTap3_65133373.csproj|solutionrelative:views\\nhanvien_65133373\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5CECC452-2660-468C-BB23-0E80071CCCBC}|BaiTap3_65133373.csproj|D:\\dev\\cs\\BaiTap3_65133373\\models\\infomodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5CECC452-2660-468C-BB23-0E80071CCCBC}|BaiTap3_65133373.csproj|solutionrelative:models\\infomodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Confirm.cshtml",
+              "DocumentMoniker": "D:\\dev\\cs\\BaiTap3_65133373\\Views\\NhanVien_65133373\\Confirm.cshtml",
+              "RelativeDocumentMoniker": "Views\\NhanVien_65133373\\Confirm.cshtml",
+              "ToolTip": "D:\\dev\\cs\\BaiTap3_65133373\\Views\\NhanVien_65133373\\Confirm.cshtml",
+              "RelativeToolTip": "Views\\NhanVien_65133373\\Confirm.cshtml",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAACAAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-27T01:50:27.916Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\dev\\cs\\BaiTap3_65133373\\Views\\NhanVien_65133373\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\NhanVien_65133373\\Index.cshtml",
+              "ToolTip": "D:\\dev\\cs\\BaiTap3_65133373\\Views\\NhanVien_65133373\\Index.cshtml",
+              "RelativeToolTip": "Views\\NhanVien_65133373\\Index.cshtml",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABMAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-26T16:46:28.46Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "InfoModel.cs",
+              "DocumentMoniker": "D:\\dev\\cs\\BaiTap3_65133373\\Models\\InfoModel.cs",
+              "RelativeDocumentMoniker": "Models\\InfoModel.cs",
+              "ToolTip": "D:\\dev\\cs\\BaiTap3_65133373\\Models\\InfoModel.cs",
+              "RelativeToolTip": "Models\\InfoModel.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAA8AAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-26T16:38:14.807Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "NhanVien_65133373Controller.cs",
+              "DocumentMoniker": "D:\\dev\\cs\\BaiTap3_65133373\\Controllers\\NhanVien_65133373Controller.cs",
+              "RelativeDocumentMoniker": "Controllers\\NhanVien_65133373Controller.cs",
+              "ToolTip": "D:\\dev\\cs\\BaiTap3_65133373\\Controllers\\NhanVien_65133373Controller.cs",
+              "RelativeToolTip": "Controllers\\NhanVien_65133373Controller.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-26T16:37:21.57Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

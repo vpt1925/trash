@@ -1,0 +1,405 @@
+@{
+    ViewBag.Title = "Bán hàng";
+    var user = Session["CurrentUser"] as QLCHTH_65133373.Models.TaiKhoan;
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <i class="fas fa-cash-register me-1"></i>Bán hàng
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                            <input type="text" id="searchProduct" class="form-control form-control-lg" placeholder="Nhập mã hoặc tên sản phẩm..." autofocus autocomplete="off" />
+                        </div>
+                        <div id="searchDropdown" class="position-absolute bg-white border rounded shadow-lg mt-1" style="display: none; z-index: 1050; max-height: 300px; overflow-y: auto; width: calc(100% - 2rem);">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th style="width: 60px;">#</th>
+                                <th>Sản phẩm</th>
+                                <th class="text-end" style="width: 100px;">Đơn giá</th>
+                                <th class="text-center" style="width: 120px;">Số lượng</th>
+                                <th class="text-end" style="width: 120px;">Thành tiền</th>
+                                <th class="text-center" style="width: 100px;">KM</th>
+                                <th style="width: 60px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cartItems">
+                            <tr id="emptyCart">
+                                <td colspan="7" class="text-center text-muted py-5">
+                                    <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+                                    <p>Chưa có sản phẩm nào trong giỏ hàng</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <i class="fas fa-receipt me-1"></i>Thanh toán
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td>Số sản phẩm:</td>
+                        <td class="text-end"><span id="totalItems" class="fw-bold">0</span></td>
+                    </tr>
+                    <tr>
+                        <td>Tổng tiền hàng:</td>
+                        <td class="text-end"><span id="subtotal" class="fw-bold">0</span> đ</td>
+                    </tr>
+                    <tr class="text-danger">
+                        <td>Giảm giá KM:</td>
+                        <td class="text-end">-<span id="discount" class="fw-bold">0</span> đ</td>
+                    </tr>
+                    <tr class="border-top">
+                        <td class="fs-5">Thành tiền:</td>
+                        <td class="text-end fs-4 fw-bold text-success"><span id="grandTotal">0</span> đ</td>
+                    </tr>
+                </table>
+                
+                <hr />
+                
+                <div class="mb-3">
+                    <label class="form-label">Tiền khách đưa:</label>
+                    <input type="number" id="customerMoney" class="form-control form-control-lg text-end" placeholder="0" oninput="calculateChange()" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tiền thừa:</label>
+                    <div class="fs-4 fw-bold text-primary" id="changeAmount">0 đ</div>
+                </div>
+                
+                <hr />
+                
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-success btn-lg" onclick="checkout()" id="btnCheckout" disabled>
+                        <i class="fas fa-check-circle me-1"></i>Thanh toán
+                    </button>
+                    <button type="button" class="btn btn-outline-danger" onclick="clearCart()">
+                        <i class="fas fa-trash me-1"></i>Xóa giỏ hàng
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <i class="fas fa-tags me-1"></i>Khuyến mãi đang áp dụng
+            </div>
+            <div class="card-body p-0">
+                <div id="activePromotions" style="max-height: 200px; overflow-y: auto;">
+                    <div class="text-center text-muted py-3">
+                        <i class="fas fa-tag"></i> Đang tải...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var cart = [];
+        var products = [];
+        var promotions = {};
+        
+        // Load products and promotions on page load
+        $(document).ready(function() {
+            loadProducts();
+            loadPromotions();
+            
+            // Live search with dropdown
+            var searchTimeout;
+            $('#searchProduct').on('input', function() {
+                var search = $(this).val().trim().toLowerCase();
+                clearTimeout(searchTimeout);
+                
+                if (search.length >= 1) {
+                    searchTimeout = setTimeout(function() {
+                        showSearchDropdown(search);
+                    }, 150);
+                } else {
+                    $('#searchDropdown').hide();
+                }
+            });
+            
+            // Search on Enter key - add first matching product
+            $('#searchProduct').on('keypress', function(e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    var search = $(this).val().trim();
+                    if (search) {
+                        // Try exact match first
+                        var product = products.find(function(p) {
+                            return p.maSanPham.toString() === search;
+                        });
+                        // If no exact match, take first from filtered list
+                        if (!product) {
+                            var filtered = products.filter(function(p) {
+                                return p.soLuongTon > 0 && (
+                                    p.maSanPham.toString().includes(search) || 
+                                    p.tenSanPham.toLowerCase().includes(search.toLowerCase())
+                                );
+                            });
+                            product = filtered[0];
+                        }
+                        if (product && product.soLuongTon > 0) {
+                            addToCart(product.maSanPham);
+                            $(this).val('').focus();
+                            $('#searchDropdown').hide();
+                        }
+                    }
+                }
+            });
+            
+            // Hide dropdown when clicking outside
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('#searchProduct, #searchDropdown').length) {
+                    $('#searchDropdown').hide();
+                }
+            });
+        });
+        
+        function showSearchDropdown(search) {
+            var filtered = products.filter(function(p) {
+                return p.maSanPham.toString().includes(search) || 
+                       p.tenSanPham.toLowerCase().includes(search);
+            }).slice(0, 10); // Limit to 10 results
+            
+            var html = '';
+            if (filtered.length > 0) {
+                filtered.forEach(function(p) {
+                    var discount = promotions[p.maSanPham] || 0;
+                    var stockClass = p.soLuongTon <= 0 ? 'text-muted' : '';
+                    var clickable = p.soLuongTon > 0 ? 'onclick="selectProduct(' + p.maSanPham + ')" style="cursor: pointer;"' : '';
+                    html += '<div class="p-2 border-bottom ' + stockClass + '" ' + clickable + '>';
+                    html += '<div class="d-flex justify-content-between align-items-center">';
+                    html += '<div><strong>' + p.maSanPham + '</strong> - ' + p.tenSanPham;
+                    if (discount > 0) html += ' <span class="badge bg-danger">-' + discount + '%</span>';
+                    html += '</div>';
+                    html += '<div class="text-end">';
+                    html += '<div>' + formatNumber(p.donGia) + ' đ</div>';
+                    html += '<small class="' + (p.soLuongTon <= 0 ? 'text-danger' : 'text-muted') + '">Tồn: ' + p.soLuongTon + '</small>';
+                    html += '</div></div></div>';
+                });
+            } else {
+                html = '<div class="p-3 text-center text-muted">Không tìm thấy sản phẩm</div>';
+            }
+            $('#searchDropdown').html(html).show();
+        }
+        
+        function selectProduct(maSP) {
+            addToCart(maSP);
+            $('#searchProduct').val('').focus();
+            $('#searchDropdown').hide();
+        }
+        
+        function loadProducts() {
+            $.get('@Url.Action("GetSanPham", "BanHang_65133373", new { area = "Cashier" })', function(data) {
+                products = data;
+            });
+        }
+        
+        function loadPromotions() {
+            $.get('@Url.Action("GetKhuyenMaiHienTai", "BanHang_65133373", new { area = "Cashier" })', function(data) {
+                promotions = {};
+                var html = '';
+                if (data.length > 0) {
+                    data.forEach(function(km) {
+                        km.chiTiet.forEach(function(ct) {
+                            promotions[ct.maSanPham] = ct.phanTramGiam;
+                        });
+                        html += '<div class="border-bottom p-2"><strong>' + km.tenKhuyenMai + '</strong><br/>';
+                        html += '<small class="text-muted">' + km.ngayBatDau + ' - ' + km.ngayKetThuc + '</small></div>';
+                    });
+                } else {
+                    html = '<div class="text-center text-muted py-3"><i class="fas fa-tag"></i> Không có khuyến mãi</div>';
+                }
+                $('#activePromotions').html(html);
+            });
+        }
+        
+        function addToCart(maSP) {
+            var product = products.find(function(p) { return p.maSanPham === maSP; });
+            if (!product) return;
+            
+            var existing = cart.find(function(c) { return c.maSanPham === maSP; });
+            if (existing) {
+                if (existing.soLuong < product.soLuongTon) {
+                    existing.soLuong++;
+                } else {
+                    alert('Số lượng tồn kho không đủ!');
+                    return;
+                }
+            } else {
+                cart.push({
+                    maSanPham: product.maSanPham,
+                    tenSanPham: product.tenSanPham,
+                    donGia: product.donGia,
+                    soLuong: 1,
+                    soLuongTon: product.soLuongTon
+                });
+            }
+            renderCart();
+        }
+        
+        function removeFromCart(maSP) {
+            cart = cart.filter(function(c) { return c.maSanPham !== maSP; });
+            renderCart();
+        }
+        
+        function updateQuantity(maSP, qty) {
+            var item = cart.find(function(c) { return c.maSanPham === maSP; });
+            if (item) {
+                qty = parseInt(qty);
+                if (qty <= 0) {
+                    removeFromCart(maSP);
+                } else if (qty > item.soLuongTon) {
+                    alert('Số lượng tồn kho không đủ!');
+                } else {
+                    item.soLuong = qty;
+                    renderCart();
+                }
+            }
+        }
+        
+        function renderCart() {
+            if (cart.length === 0) {
+                $('#emptyCart').show();
+                $('#cartItems tr:not(#emptyCart)').remove();
+                $('#totalItems').text('0');
+                $('#subtotal').text('0');
+                $('#discount').text('0');
+                $('#grandTotal').text('0');
+                $('#btnCheckout').prop('disabled', true);
+                return;
+            }
+            
+            $('#emptyCart').hide();
+            var html = '';
+            var totalItems = 0;
+            var subtotal = 0;
+            var totalDiscount = 0;
+            
+            cart.forEach(function(item, index) {
+                var thanhTien = item.donGia * item.soLuong;
+                var discountPercent = promotions[item.maSanPham] || 0;
+                var discountAmount = thanhTien * discountPercent / 100;
+                
+                totalItems += item.soLuong;
+                subtotal += thanhTien;
+                totalDiscount += discountAmount;
+                
+                html += '<tr>';
+                html += '<td class="text-center">' + (index + 1) + '</td>';
+                html += '<td>' + item.tenSanPham + '<br/><small class="text-muted">Mã: ' + item.maSanPham + '</small></td>';
+                html += '<td class="text-end">' + formatNumber(item.donGia) + ' đ</td>';
+                html += '<td><input type="number" class="form-control form-control-sm text-center" value="' + item.soLuong + '" min="1" max="' + item.soLuongTon + '" onchange="updateQuantity(' + item.maSanPham + ', this.value)" /></td>';
+                html += '<td class="text-end fw-bold">' + formatNumber(thanhTien) + ' đ</td>';
+                html += '<td class="text-center">';
+                if (discountPercent > 0) {
+                    html += '<span class="badge bg-danger">-' + discountPercent + '%</span>';
+                } else {
+                    html += '-';
+                }
+                html += '</td>';
+                html += '<td><button class="btn btn-sm btn-danger" onclick="removeFromCart(' + item.maSanPham + ')"><i class="fas fa-times"></i></button></td>';
+                html += '</tr>';
+            });
+            
+            $('#cartItems tr:not(#emptyCart)').remove();
+            $('#cartItems').append(html);
+            
+            $('#totalItems').text(totalItems);
+            $('#subtotal').text(formatNumber(subtotal));
+            $('#discount').text(formatNumber(totalDiscount));
+            $('#grandTotal').text(formatNumber(subtotal - totalDiscount));
+            $('#btnCheckout').prop('disabled', false);
+            
+            calculateChange();
+        }
+        
+        function calculateChange() {
+            var grandTotal = parseInt($('#grandTotal').text().replace(/\./g, '')) || 0;
+            var customerMoney = parseInt($('#customerMoney').val()) || 0;
+            var change = customerMoney - grandTotal;
+            $('#changeAmount').text(formatNumber(Math.max(0, change)) + ' đ');
+            $('#changeAmount').removeClass('text-primary text-danger');
+            $('#changeAmount').addClass(change >= 0 ? 'text-primary' : 'text-danger');
+        }
+        
+        function clearCart() {
+            if (cart.length > 0 && confirm('Bạn có chắc muốn xóa giỏ hàng?')) {
+                cart = [];
+                renderCart();
+                $('#customerMoney').val('');
+            }
+        }
+        
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Giỏ hàng trống!');
+                return;
+            }
+            
+            var grandTotal = parseInt($('#grandTotal').text().replace(/\./g, '')) || 0;
+            var customerMoney = parseInt($('#customerMoney').val()) || 0;
+            
+            if (customerMoney < grandTotal) {
+                alert('Tiền khách đưa không đủ!');
+                return;
+            }
+            
+            var data = {
+                chiTiet: cart.map(function(item) {
+                    return {
+                        maSanPham: item.maSanPham,
+                        soLuong: item.soLuong,
+                        donGia: item.donGia,
+                        giamGia: (item.donGia * item.soLuong * (promotions[item.maSanPham] || 0)) / 100
+                    };
+                })
+            };
+            
+            $.ajax({
+                url: '@Url.Action("ThanhToan", "BanHang_65133373", new { area = "Cashier" })',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(result) {
+                    if (result.success) {
+                        alert('Thanh toán thành công! Mã hóa đơn: ' + result.maHoaDon);
+                        cart = [];
+                        renderCart();
+                        $('#customerMoney').val('');
+                        loadProducts(); // Refresh stock
+                    } else {
+                        alert('Lỗi: ' + result.message);
+                    }
+                },
+                error: function() {
+                    alert('Có lỗi xảy ra!');
+                }
+            });
+        }
+        
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+    </script>
+}

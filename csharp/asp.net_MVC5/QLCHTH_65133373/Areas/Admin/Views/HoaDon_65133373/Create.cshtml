@@ -1,0 +1,347 @@
+@model QLCHTH_65133373.Models.ViewModels.TaoHoaDonViewModel
+@{
+    ViewBag.Title = "Tạo hóa đơn mới";
+}
+
+<h1 class="mt-4"><i class="fas fa-file-invoice me-2"></i>Tạo hóa đơn mới</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard_65133373")">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="@Url.Action("Index")">Hóa đơn</a></li>
+    <li class="breadcrumb-item active">Tạo mới</li>
+</ol>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <i class="fas fa-shopping-cart me-1"></i>Thêm sản phẩm vào hóa đơn
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" id="searchProduct" class="form-control" placeholder="Tìm sản phẩm theo mã hoặc tên..." />
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-bordered table-hover table-sm" id="productTable">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th style="width: 60px;">Mã</th>
+                                <th>Tên sản phẩm</th>
+                                <th class="text-end" style="width: 100px;">Đơn giá</th>
+                                <th class="text-center" style="width: 80px;">Tồn</th>
+                                <th style="width: 60px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="productList">
+                        </tbody>
+                    </table>
+                </div>
+                
+                <hr />
+                
+                <h6><i class="fas fa-cart-plus me-1"></i>Giỏ hàng</h6>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 60px;">#</th>
+                                <th>Sản phẩm</th>
+                                <th class="text-end" style="width: 100px;">Đơn giá</th>
+                                <th class="text-center" style="width: 100px;">Số lượng</th>
+                                <th class="text-end" style="width: 100px;">Giảm giá</th>
+                                <th class="text-end" style="width: 120px;">Thành tiền</th>
+                                <th style="width: 50px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cartItems">
+                            <tr id="emptyCart">
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                                    <p class="mb-0">Chưa có sản phẩm</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <i class="fas fa-receipt me-1"></i>Tổng kết
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless mb-0">
+                    <tr>
+                        <td>Số sản phẩm:</td>
+                        <td class="text-end fw-bold"><span id="totalItems">0</span></td>
+                    </tr>
+                    <tr>
+                        <td>Tổng tiền hàng:</td>
+                        <td class="text-end fw-bold"><span id="subtotal">0</span> đ</td>
+                    </tr>
+                    <tr class="text-danger">
+                        <td>Giảm giá KM:</td>
+                        <td class="text-end fw-bold">-<span id="discount">0</span> đ</td>
+                    </tr>
+                    <tr class="border-top">
+                        <td class="fs-5">Thành tiền:</td>
+                        <td class="text-end fs-4 fw-bold text-success"><span id="grandTotal">0</span> đ</td>
+                    </tr>
+                </table>
+                
+                <hr />
+                
+                <div class="mb-3">
+                    <label class="form-label">Ghi chú:</label>
+                    <textarea id="ghiChu" class="form-control" rows="2" placeholder="Ghi chú (không bắt buộc)"></textarea>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-success btn-lg" onclick="createInvoice()" id="btnCreate" disabled>
+                        <i class="fas fa-check-circle me-1"></i>Tạo hóa đơn
+                    </button>
+                    <button type="button" class="btn btn-outline-danger" onclick="clearCart()">
+                        <i class="fas fa-trash me-1"></i>Xóa giỏ hàng
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var cart = {};
+        var products = {};
+        var promotions = {};
+
+        $(document).ready(function() {
+            loadProducts();
+            loadPromotions();
+
+            $('#searchProduct').on('input', function() {
+                filterProducts($(this).val().toLowerCase());
+            });
+        });
+
+        function loadProducts() {
+            $.get('@Url.Action("GetSanPhamList")', function(data) {
+                products = {};
+                data.forEach(function(p) {
+                    products[p.maSP] = p;
+                });
+                renderProductList(data);
+            });
+        }
+
+        function loadPromotions() {
+            $.get('@Url.Action("GetKhuyenMaiHienTai")', function(data) {
+                promotions = {};
+                data.forEach(function(km) {
+                    km.chiTiet.forEach(function(ct) {
+                        if (!promotions[ct.maSanPham] || promotions[ct.maSanPham].phanTramGiam < ct.phanTramGiam) {
+                            promotions[ct.maSanPham] = {
+                                maKM: km.maKhuyenMai,
+                                tenKM: km.tenKhuyenMai,
+                                phanTramGiam: ct.phanTramGiam
+                            };
+                        }
+                    });
+                });
+            });
+        }
+
+        function renderProductList(data) {
+            var html = '';
+            data.forEach(function(p) {
+                if (p.soLuongTon > 0) {
+                    var promo = promotions[p.maSP];
+                    html += '<tr data-masp="' + p.maSP + '" data-tensp="' + p.tenSP.toLowerCase() + '">';
+                    html += '<td>' + p.maSP + '</td>';
+                    html += '<td>' + p.tenSP;
+                    if (promo) {
+                        html += ' <span class="badge bg-danger">-' + promo.phanTramGiam + '%</span>';
+                    }
+                    html += '</td>';
+                    html += '<td class="text-end">' + formatNumber(p.donGia) + 'đ</td>';
+                    html += '<td class="text-center">' + p.soLuongTon + '</td>';
+                    html += '<td><button class="btn btn-sm btn-success" onclick="addToCart(' + p.maSP + ')"><i class="fas fa-plus"></i></button></td>';
+                    html += '</tr>';
+                }
+            });
+            $('#productList').html(html || '<tr><td colspan="5" class="text-center text-muted">Không có sản phẩm</td></tr>');
+        }
+
+        function filterProducts(search) {
+            $('#productList tr').each(function() {
+                var masp = $(this).data('masp');
+                var tensp = $(this).data('tensp');
+                if (masp && (masp.toString().indexOf(search) >= 0 || (tensp && tensp.indexOf(search) >= 0))) {
+                    $(this).show();
+                } else if (masp) {
+                    $(this).hide();
+                }
+            });
+        }
+
+        function addToCart(maSP) {
+            var product = products[maSP];
+            if (!product) return;
+
+            if (cart[maSP]) {
+                if (cart[maSP].soLuong < product.soLuongTon) {
+                    cart[maSP].soLuong++;
+                } else {
+                    alert('Không đủ số lượng trong kho!');
+                    return;
+                }
+            } else {
+                var promo = promotions[maSP];
+                cart[maSP] = {
+                    maSP: maSP,
+                    tenSP: product.tenSP,
+                    donGia: product.donGia,
+                    soLuong: 1,
+                    soLuongTon: product.soLuongTon,
+                    phanTramGiam: promo ? promo.phanTramGiam : 0,
+                    maKM: promo ? promo.maKM : null,
+                    tenKM: promo ? promo.tenKM : null
+                };
+            }
+            renderCart();
+        }
+
+        function updateQuantity(maSP, delta) {
+            if (!cart[maSP]) return;
+            var newQty = cart[maSP].soLuong + delta;
+            if (newQty <= 0) {
+                delete cart[maSP];
+            } else if (newQty > cart[maSP].soLuongTon) {
+                alert('Không đủ số lượng trong kho!');
+                return;
+            } else {
+                cart[maSP].soLuong = newQty;
+            }
+            renderCart();
+        }
+
+        function removeFromCart(maSP) {
+            delete cart[maSP];
+            renderCart();
+        }
+
+        function clearCart() {
+            if (Object.keys(cart).length === 0 || confirm('Bạn có chắc muốn xóa giỏ hàng?')) {
+                cart = {};
+                renderCart();
+            }
+        }
+
+        function renderCart() {
+            var html = '';
+            var stt = 0;
+            var totalItems = 0;
+            var subtotal = 0;
+            var discount = 0;
+
+            for (var maSP in cart) {
+                var item = cart[maSP];
+                stt++;
+                totalItems += item.soLuong;
+                var thanhTienChuaGiam = item.donGia * item.soLuong;
+                var tienGiam = thanhTienChuaGiam * item.phanTramGiam / 100;
+                var thanhTien = thanhTienChuaGiam - tienGiam;
+                subtotal += thanhTienChuaGiam;
+                discount += tienGiam;
+
+                html += '<tr>';
+                html += '<td>' + stt + '</td>';
+                html += '<td>' + item.tenSP + '</td>';
+                html += '<td class="text-end">' + formatNumber(item.donGia) + 'đ</td>';
+                html += '<td class="text-center">';
+                html += '<div class="btn-group btn-group-sm">';
+                html += '<button class="btn btn-outline-secondary" onclick="updateQuantity(' + maSP + ', -1)"><i class="fas fa-minus"></i></button>';
+                html += '<span class="btn btn-outline-secondary disabled">' + item.soLuong + '</span>';
+                html += '<button class="btn btn-outline-secondary" onclick="updateQuantity(' + maSP + ', 1)"><i class="fas fa-plus"></i></button>';
+                html += '</div>';
+                html += '</td>';
+                html += '<td class="text-end text-danger">';
+                if (item.phanTramGiam > 0) {
+                    html += '-' + item.phanTramGiam + '%';
+                } else {
+                    html += '-';
+                }
+                html += '</td>';
+                html += '<td class="text-end fw-bold">' + formatNumber(thanhTien) + 'đ</td>';
+                html += '<td><button class="btn btn-sm btn-danger" onclick="removeFromCart(' + maSP + ')"><i class="fas fa-times"></i></button></td>';
+                html += '</tr>';
+            }
+
+            if (html === '') {
+                html = '<tr id="emptyCart"><td colspan="7" class="text-center text-muted py-4"><i class="fas fa-shopping-cart fa-2x mb-2"></i><p class="mb-0">Chưa có sản phẩm</p></td></tr>';
+            }
+
+            $('#cartItems').html(html);
+            $('#totalItems').text(totalItems);
+            $('#subtotal').text(formatNumber(subtotal));
+            $('#discount').text(formatNumber(discount));
+            $('#grandTotal').text(formatNumber(subtotal - discount));
+            $('#btnCreate').prop('disabled', totalItems === 0);
+        }
+
+        function createInvoice() {
+            if (Object.keys(cart).length === 0) {
+                alert('Giỏ hàng trống!');
+                return;
+            }
+
+            var chiTiet = [];
+            for (var maSP in cart) {
+                var item = cart[maSP];
+                chiTiet.push({
+                    MaSanPham: parseInt(maSP),
+                    SoLuong: item.soLuong,
+                    DonGia: item.donGia,
+                    GiamGia: item.phanTramGiam
+                });
+            }
+
+            var data = {
+                GhiChu: $('#ghiChu').val(),
+                ChiTiet: chiTiet
+            };
+
+            $.ajax({
+                url: '@Url.Action("CreateApi")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = '@Url.Action("Details")/' + response.maHD;
+                    } else {
+                        $('#errorMessage').text(response.message).parent().show();
+                    }
+                },
+                error: function() {
+                    $('#errorMessage').text('Có lỗi xảy ra khi tạo hóa đơn!').parent().show();
+                }
+            });
+        }
+
+        function formatNumber(num) {
+            return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+    </script>
+}

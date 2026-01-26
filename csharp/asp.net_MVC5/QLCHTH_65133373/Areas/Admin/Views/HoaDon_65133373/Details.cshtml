@@ -1,0 +1,113 @@
+@model QLCHTH_65133373.Models.ViewModels.HoaDonViewModel
+@{
+    ViewBag.Title = "Chi tiết hóa đơn";
+}
+
+<h1 class="mt-4"><i class="fas fa-file-invoice me-2"></i>Chi tiết hóa đơn</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard_65133373")">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="@Url.Action("Index")">Hóa đơn</a></li>
+    <li class="breadcrumb-item active">Chi tiết</li>
+</ol>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-info-circle me-1"></i>Thông tin hóa đơn</div>
+            <div class="card-body">
+                <table class="table table-borderless mb-0">
+                    <tr>
+                        <th style="width: 40%;">Mã hóa đơn:</th>
+                        <td><strong>@Model.MaHD</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Ngày lập:</th>
+                        <td>@Model.NgayBan.ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                    <tr>
+                        <th>Nhân viên:</th>
+                        <td>@Model.TenNhanVien</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white"><i class="fas fa-money-bill me-1"></i>Thanh toán</div>
+            <div class="card-body">
+                <table class="table table-borderless mb-0">
+                    <tr>
+                        <th>Tổng tiền hàng:</th>
+                        <td class="text-end">@Model.TongTien.ToString("N0") đ</td>
+                    </tr>
+                    <tr class="text-danger">
+                        <th>Giảm giá:</th>
+                        <td class="text-end">-@Model.TongGiamGia.ToString("N0") đ</td>
+                    </tr>
+                    <tr class="border-top">
+                        <th class="fs-5">Thành tiền:</th>
+                        <td class="text-end fs-5 fw-bold text-success">@Model.ThanhToan.ToString("N0") đ</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="d-grid gap-2">
+            <button type="button" class="btn btn-outline-secondary" onclick="window.print()">
+                <i class="fas fa-print me-1"></i>In hóa đơn
+            </button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Quay lại danh sách
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-shopping-cart me-1"></i>Chi tiết sản phẩm (@Model.ChiTietHoaDons.Count sản phẩm)</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 60px;">#</th>
+                                <th>Sản phẩm</th>
+                                <th class="text-end" style="width: 100px;">Đơn giá</th>
+                                <th class="text-center" style="width: 80px;">SL</th>
+                                <th class="text-end" style="width: 120px;">Thành tiền</th>
+                                <th class="text-end" style="width: 100px;">Giảm giá</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int stt = 0; }
+                            @foreach (var ct in Model.ChiTietHoaDons)
+                            {
+                                stt++;
+                                <tr>
+                                    <td class="text-center">@stt</td>
+                                    <td>
+                                        <strong>@ct.TenSP</strong>
+                                        <br /><small class="text-muted">Mã: @ct.MaSP</small>
+                                    </td>
+                                    <td class="text-end">@ct.DonGia.ToString("N0") đ</td>
+                                    <td class="text-center">@ct.SoLuong</td>
+                                    <td class="text-end">@ct.ThanhTien.ToString("N0") đ</td>
+                                    <td class="text-end text-danger">
+                                        @if (ct.TienGiam > 0)
+                                        {
+                                            @:-@ct.TienGiam.ToString("N0") đ
+                                        }
+                                        else
+                                        {
+                                            @:-
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

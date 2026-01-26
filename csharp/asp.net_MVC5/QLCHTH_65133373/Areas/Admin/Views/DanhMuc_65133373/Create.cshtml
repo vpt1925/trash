@@ -1,0 +1,40 @@
+@model QLCHTH_65133373.Models.ViewModels.DanhMucViewModel
+@{
+    ViewBag.Title = "Thêm danh mục";
+}
+
+<h1 class="mt-4"><i class="fas fa-plus-circle me-2"></i>Thêm danh mục mới</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard_65133373")">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="@Url.Action("Index")">Danh mục</a></li>
+    <li class="breadcrumb-item active">Thêm mới</li>
+</ol>
+
+<div class="card mb-4">
+    <div class="card-header"><i class="fas fa-folder me-1"></i>Thông tin danh mục</div>
+    <div class="card-body">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Tên danh mục <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.TenDanhMuc, new { @class = "form-control", placeholder = "Nhập tên danh mục" })
+                        @Html.ValidationMessageFor(m => m.TenDanhMuc, "", new { @class = "text-danger small" })
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        @Html.TextAreaFor(m => m.MoTa, new { @class = "form-control", rows = "3", placeholder = "Mô tả ngắn (không bắt buộc)" })
+                        @Html.ValidationMessageFor(m => m.MoTa, "", new { @class = "text-danger small" })
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="d-flex justify-content-between">
+                <a href="@Url.Action("Index")" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i>Quay lại</a>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Lưu danh mục</button>
+            </div>
+        }
+    </div>
+</div>

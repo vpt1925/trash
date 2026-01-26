@@ -1,0 +1,61 @@
+@{
+    // Generic pagination partial view - accepts any PagedList<T>
+    dynamic pagedModel = Model;
+}
+
+@if (pagedModel.TotalPages > 1)
+{
+    <nav aria-label="Page navigation">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="text-muted small">
+                Hiển thị @((pagedModel.PageIndex - 1) * pagedModel.PageSize + 1) - @(Math.Min(pagedModel.PageIndex * pagedModel.PageSize, pagedModel.TotalCount)) / @pagedModel.TotalCount kết quả
+            </div>
+            <ul class="pagination mb-0">
+                @if (pagedModel.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@GetPageUrl(1)">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@GetPageUrl(pagedModel.PageIndex - 1)">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                }
+
+                @for (int i = pagedModel.StartPage; i <= pagedModel.EndPage; i++)
+                {
+                    <li class="page-item @(i == pagedModel.PageIndex ? "active" : "")">
+                        <a class="page-link" href="@GetPageUrl(i)">@i</a>
+                    </li>
+                }
+
+                @if (pagedModel.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@GetPageUrl(pagedModel.PageIndex + 1)">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@GetPageUrl(pagedModel.TotalPages)">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </nav>
+}
+
+@functions {
+    string GetPageUrl(int page)
+    {
+        var request = HttpContext.Current.Request;
+        var queryString = HttpUtility.ParseQueryString(request.QueryString.ToString());
+        queryString["page"] = page.ToString();
+        return request.Path + "?" + queryString.ToString();
+    }
+}

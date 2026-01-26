@@ -1,0 +1,165 @@
+@{
+    ViewBag.Title = "Tra cứu sản phẩm";
+}
+
+<h1 class="mt-4">
+    <i class="fas fa-search me-2"></i>Tra cứu sản phẩm
+</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index", "BanHang_65133373")">Bán hàng</a></li>
+    <li class="breadcrumb-item active">Tra cứu</li>
+</ol>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-boxes me-1"></i>Danh sách sản phẩm
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Tìm theo mã hoặc tên..." />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select id="filterDanhMuc" class="form-select">
+                    <option value="">-- Tất cả danh mục --</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="productTable">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 80px;">Mã SP</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Danh mục</th>
+                        <th class="text-end">Đơn giá</th>
+                        <th class="text-center">Tồn kho</th>
+                        <th class="text-center">Khuyến mãi</th>
+                        <th class="text-end">Giá sau KM</th>
+                    </tr>
+                </thead>
+                <tbody id="productList">
+                    <tr>
+                        <td colspan="7" class="text-center py-4">
+                            <i class="fas fa-spinner fa-spin"></i> Đang tải...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var allProducts = [];
+        var categories = [];
+        var promotions = {};
+        
+        $(document).ready(function() {
+            loadData();
+            
+            $('#searchInput').on('input', filterProducts);
+            $('#filterDanhMuc').on('change', filterProducts);
+        });
+        
+        function loadData() {
+            // Load products
+            $.get('@Url.Action("GetSanPham", "BanHang_65133373", new { area = "Cashier" })', function(data) {
+                allProducts = data;
+                
+                // Extract categories
+                var catMap = {};
+                data.forEach(function(p) {
+                    if (p.tenDanhMuc && !catMap[p.maDanhMuc]) {
+                        catMap[p.maDanhMuc] = p.tenDanhMuc;
+                    }
+                });
+                
+                var catHtml = '<option value="">-- Tất cả danh mục --</option>';
+                for (var id in catMap) {
+                    catHtml += '<option value="' + id + '">' + catMap[id] + '</option>';
+                }
+                $('#filterDanhMuc').html(catHtml);
+                
+                // Load promotions then render
+                loadPromotions();
+            });
+        }
+        
+        function loadPromotions() {
+            $.get('@Url.Action("GetKhuyenMaiHienTai", "BanHang_65133373", new { area = "Cashier" })', function(data) {
+                promotions = {};
+                data.forEach(function(km) {
+                    km.chiTiet.forEach(function(ct) {
+                        promotions[ct.maSanPham] = {
+                            phanTram: ct.phanTramGiam,
+                            tenKM: km.tenKhuyenMai
+                        };
+                    });
+                });
+                renderProducts(allProducts);
+            });
+        }
+        
+        function filterProducts() {
+            var search = $('#searchInput').val().toLowerCase();
+            var catId = $('#filterDanhMuc').val();
+            
+            var filtered = allProducts.filter(function(p) {
+                var matchSearch = p.maSanPham.toString().includes(search) || 
+                                  p.tenSanPham.toLowerCase().includes(search);
+                var matchCat = !catId || p.maDanhMuc.toString() === catId;
+                return matchSearch && matchCat;
+            });
+            
+            renderProducts(filtered);
+        }
+        
+        function renderProducts(list) {
+            var html = '';
+            if (list.length === 0) {
+                html = '<tr><td colspan="7" class="text-center py-4 text-muted">Không tìm thấy sản phẩm nào</td></tr>';
+            } else {
+                list.forEach(function(p) {
+                    var promo = promotions[p.maSanPham];
+                    var giaGoc = p.donGia;
+                    var giaSauKM = promo ? Math.round(giaGoc * (100 - promo.phanTram) / 100) : giaGoc;
+                    
+                    html += '<tr>';
+                    html += '<td><strong>' + p.maSanPham + '</strong></td>';
+                    html += '<td>' + p.tenSanPham + '</td>';
+                    html += '<td>' + (p.tenDanhMuc || '-') + '</td>';
+                    html += '<td class="text-end">' + formatNumber(giaGoc) + ' đ</td>';
+                    html += '<td class="text-center">';
+                    if (p.soLuongTon > 10) {
+                        html += '<span class="badge bg-success">' + p.soLuongTon + '</span>';
+                    } else if (p.soLuongTon > 0) {
+                        html += '<span class="badge bg-warning text-dark">' + p.soLuongTon + '</span>';
+                    } else {
+                        html += '<span class="badge bg-danger">Hết hàng</span>';
+                    }
+                    html += '</td>';
+                    html += '<td class="text-center">';
+                    if (promo) {
+                        html += '<span class="badge bg-danger">-' + promo.phanTram + '%</span>';
+                    } else {
+                        html += '-';
+                    }
+                    html += '</td>';
+                    html += '<td class="text-end fw-bold ' + (promo ? 'text-success' : '') + '">' + formatNumber(giaSauKM) + ' đ</td>';
+                    html += '</tr>';
+                });
+            }
+            $('#productList').html(html);
+        }
+        
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+    </script>
+}

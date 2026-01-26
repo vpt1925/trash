@@ -1,0 +1,233 @@
+@model QLCHTH_65133373.Models.ViewModels.HoaDonViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Hóa đơn #@Model.MaHD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 12pt;
+            line-height: 1.4;
+            padding: 20px;
+            max-width: 80mm;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 10px;
+        }
+        .shop-name {
+            font-size: 16pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .shop-info {
+            font-size: 10pt;
+            color: #333;
+        }
+        .invoice-title {
+            font-size: 14pt;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+            text-transform: uppercase;
+        }
+        .invoice-info {
+            margin-bottom: 10px;
+            font-size: 10pt;
+        }
+        .invoice-info p {
+            margin: 3px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 10pt;
+        }
+        th {
+            border-top: 1px dashed #000;
+            border-bottom: 1px dashed #000;
+            padding: 5px 2px;
+            text-align: left;
+        }
+        th:last-child, td:last-child {
+            text-align: right;
+        }
+        td {
+            padding: 3px 2px;
+            vertical-align: top;
+        }
+        .item-name {
+            font-weight: 500;
+        }
+        .item-detail {
+            font-size: 9pt;
+            color: #555;
+        }
+        .discount-row {
+            font-size: 9pt;
+            color: #d9534f;
+            font-style: italic;
+        }
+        .totals {
+            border-top: 1px dashed #000;
+            padding-top: 8px;
+            margin-top: 5px;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            font-size: 10pt;
+        }
+        .grand-total {
+            font-weight: bold;
+            font-size: 12pt;
+            border-top: 1px dashed #000;
+            margin-top: 5px;
+            padding-top: 5px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 15px;
+            border-top: 1px dashed #000;
+            padding-top: 10px;
+            font-size: 10pt;
+        }
+        .thank-you {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .note {
+            font-size: 9pt;
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+        }
+        @@media print {
+            body {
+                padding: 0;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+        .print-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12pt;
+        }
+        .print-btn:hover {
+            background: #0b5ed7;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-btn no-print" onclick="window.print()">
+        <i class="fas fa-print"></i> In hóa đơn
+    </button>
+
+    <div class="header">
+        <div class="shop-name">Cửa hàng tạp hóa</div>
+        <div class="shop-info">
+            Địa chỉ: 123 Đường ABC, Quận XYZ<br />
+            ĐT: 0123 456 789
+        </div>
+    </div>
+
+    <div class="invoice-title">Hóa đơn bán hàng</div>
+
+    <div class="invoice-info">
+        <p><strong>Số HD:</strong> #@Model.MaHD</p>
+        <p><strong>Ngày:</strong> @Model.NgayBan.ToString("dd/MM/yyyy HH:mm")</p>
+        <p><strong>Thu ngân:</strong> @Model.TenNhanVien</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 60%">Sản phẩm</th>
+                <th style="width: 15%">SL</th>
+                <th style="width: 25%">T.Tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ChiTietHoaDons)
+            {
+                <tr>
+                    <td>
+                        <div class="item-name">@item.TenSP</div>
+                        <div class="item-detail">@item.DonGia.ToString("N0")đ/@item.DonViTinh</div>
+                    </td>
+                    <td>@item.SoLuong</td>
+                    <td>@((item.DonGia * item.SoLuong).ToString("N0"))đ</td>
+                </tr>
+                if (item.PhanTramGiam > 0)
+                {
+                    <tr class="discount-row">
+                        <td colspan="2">└ KM: -@item.PhanTramGiam%</td>
+                        <td>-@item.TienGiam.ToString("N0")đ</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <div class="total-row">
+            <span>Tạm tính:</span>
+            <span>@Model.TongTien.ToString("N0")đ</span>
+        </div>
+        @if (Model.TongGiamGia > 0)
+        {
+            <div class="total-row" style="color: #d9534f;">
+                <span>Giảm giá:</span>
+                <span>-@Model.TongGiamGia.ToString("N0")đ</span>
+            </div>
+        }
+        <div class="total-row grand-total">
+            <span>Tổng thanh toán:</span>
+            <span>@Model.ThanhToan.ToString("N0")đ</span>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.GhiChu))
+    {
+        <div class="note">
+            <strong>Ghi chú:</strong> @Model.GhiChu
+        </div>
+    }
+
+    <div class="footer">
+        <div class="thank-you">Cảm ơn quý khách!</div>
+        <div>Hẹn gặp lại</div>
+    </div>
+
+    <script>
+        // Tự động in khi trang load xong
+        window.onload = function() {
+            // Uncomment dòng dưới nếu muốn tự động in
+            // window.print();
+        };
+    </script>
+</body>
+</html>

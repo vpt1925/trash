@@ -1,0 +1,68 @@
+@model QLCHTH_65133373.Models.ViewModels.TaiKhoanViewModel
+@{
+    ViewBag.Title = "Thêm tài khoản";
+}
+
+<h1 class="mt-4"><i class="fas fa-user-plus me-2"></i>Thêm tài khoản mới</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard_65133373")">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="@Url.Action("Index")">Tài khoản</a></li>
+    <li class="breadcrumb-item active">Thêm mới</li>
+</ol>
+
+<div class="card mb-4">
+    <div class="card-header"><i class="fas fa-user me-1"></i>Thông tin tài khoản</div>
+    <div class="card-body">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Tên đăng nhập <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.TenDangNhap, new { @class = "form-control", placeholder = "Nhập tên đăng nhập" })
+                        @Html.ValidationMessageFor(m => m.TenDangNhap, "", new { @class = "text-danger small" })
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu <span class="text-danger">*</span></label>
+                        @Html.PasswordFor(m => m.MatKhau, new { @class = "form-control", placeholder = "Nhập mật khẩu" })
+                        @Html.ValidationMessageFor(m => m.MatKhau, "", new { @class = "text-danger small" })
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                        @Html.PasswordFor(m => m.XacNhanMatKhau, new { @class = "form-control", placeholder = "Nhập lại mật khẩu" })
+                        @Html.ValidationMessageFor(m => m.XacNhanMatKhau, "", new { @class = "text-danger small" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Tên hiển thị <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.TenHienThi, new { @class = "form-control", placeholder = "Nhập tên hiển thị" })
+                        @Html.ValidationMessageFor(m => m.TenHienThi, "", new { @class = "text-danger small" })
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ghi chú</label>
+                        @Html.TextAreaFor(m => m.GhiChu, new { @class = "form-control", placeholder = "Ghi chú (không bắt buộc)", rows = "2" })
+                        @Html.ValidationMessageFor(m => m.GhiChu, "", new { @class = "text-danger small" })
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Loại tài khoản <span class="text-danger">*</span></label>
+                        @Html.DropDownListFor(m => m.LoaiTaiKhoan,
+                            new List<SelectListItem> {
+                                new SelectListItem { Value = "0", Text = "Quản trị viên" },
+                                new SelectListItem { Value = "1", Text = "Thu ngân" }
+                            },
+                            "-- Chọn loại --",
+                            new { @class = "form-select" })
+                        @Html.ValidationMessageFor(m => m.LoaiTaiKhoan, "", new { @class = "text-danger small" })
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="d-flex justify-content-between">
+                <a href="@Url.Action("Index")" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i>Quay lại</a>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Tạo tài khoản</button>
+            </div>
+        }
+    </div>
+</div>

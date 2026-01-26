@@ -1,0 +1,246 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/css/styles.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <style>
+        .sb-sidenav-menu-heading {
+            font-size: 0.75rem;
+        }
+        .nav-link-text {
+            font-size: 0.95rem;
+        }
+        .card-header {
+            font-weight: 600;
+        }
+        .table th {
+            white-space: nowrap;
+        }
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        .search-box {
+            position: relative;
+        }
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            max-height: 300px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        .search-result-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .search-result-item:hover {
+            background-color: #f8f9fa;
+        }
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+        .stat-card {
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+    @RenderSection("styles", required: false)
+</head>
+<body class="sb-nav-fixed">
+    <!-- Navbar -->
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <a class="navbar-brand ps-3" href="@Url.Action("Index", "Dashboard_65133373", new { area = "Admin" })">
+            <i class="fas fa-store me-2"></i>Quản Lý Tạp Hóa
+        </a>
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!">
+            <i class="fas fa-bars"></i>
+        </button>
+        <!-- Navbar Right -->
+        <ul class="navbar-nav ms-auto me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user fa-fw"></i>
+                    @if (Session["TenHienThi"] != null)
+                    {
+                        @Session["TenHienThi"]
+                    }
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="@Url.Action("Logout", "Account_65133373", new { area = "" })"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    
+    <div id="layoutSidenav">
+        <!-- Sidebar -->
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <!-- Dashboard -->
+                        <div class="sb-sidenav-menu-heading">Tổng quan</div>
+                        <a class="nav-link" href="@Url.Action("Index", "Dashboard_65133373", new { area = "Admin" })">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Dashboard
+                        </a>
+                        
+                        <!-- Quản lý sản phẩm -->
+                        <div class="sb-sidenav-menu-heading">Quản lý sản phẩm</div>
+                        <a class="nav-link" href="@Url.Action("Index", "SanPham_65133373", new { area = "Admin" })">
+                            <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
+                            Sản phẩm
+                        </a>
+                        <a class="nav-link" href="@Url.Action("Index", "DanhMuc_65133373", new { area = "Admin" })">
+                            <div class="sb-nav-link-icon"><i class="fas fa-folder"></i></div>
+                            Danh mục
+                        </a>
+                        <a class="nav-link" href="@Url.Action("Index", "NhaCungCap_65133373", new { area = "Admin" })">
+                            <div class="sb-nav-link-icon"><i class="fas fa-truck"></i></div>
+                            Nhà cung cấp
+                        </a>
+
+                        <!-- Bán hàng -->
+                        <div class="sb-sidenav-menu-heading">Bán hàng</div>
+                        <a class="nav-link" href="@Url.Action("Index", "HoaDon_65133373", new { area = "Admin" })">
+                            <div class="sb-nav-link-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                            Hóa đơn
+                        </a>
+                        <a class="nav-link" href="@Url.Action("Index", "KhuyenMai_65133373", new { area = "Admin" })">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tags"></i></div>
+                            Khuyến mãi
+                        </a>
+
+                        <!-- Thống kê -->
+                        <div class="sb-sidenav-menu-heading">Báo cáo</div>
+                        <a class="nav-link" href="@Url.Action("Index", "ThongKe_65133373", new { area = "Admin" })">
+                            <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
+                            Thống kê
+                        </a>
+
+                        <!-- Quản lý tài khoản -->
+                        <div class="sb-sidenav-menu-heading">Hệ thống</div>
+                        <a class="nav-link" href="@Url.Action("Index", "TaiKhoan_65133373", new { area = "Admin" })">
+                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                            Tài khoản
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    @RenderBody()
+                </div>
+            </main>
+            <footer class="py-2 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="text-center small text-muted">MSSV: 65133373</div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-3.7.0.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.js"></script>
+    <script src="~/Content/js/scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script>
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function () {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function (alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+        
+        // Pagination state management
+        (function() {
+            var path = window.location.pathname.toLowerCase();
+            var searchParams = new URLSearchParams(window.location.search);
+            var currentPage = searchParams.get('page');
+            
+            // Lưu page hiện tại cho controller này
+            var controllerMatch = path.match(/\/([^\/]+_65133373)/);
+            if (controllerMatch) {
+                var controllerKey = 'lastPage_' + controllerMatch[1];
+                var isIndexPage = path.endsWith('/index') || path.match(/\/[^\/]+_65133373\/?$/);
+                
+                // Nếu đang ở trang Index có page, lưu lại
+                if (currentPage && isIndexPage) {
+                    sessionStorage.setItem(controllerKey, currentPage);
+                }
+                
+                // Nếu vừa redirect về Index mà không có page và có TempData message
+                var hasMessage = document.querySelector('.alert-success, .alert-danger');
+                if (hasMessage && !currentPage && isIndexPage) {
+                    var savedPage = sessionStorage.getItem(controllerKey);
+                    if (savedPage && parseInt(savedPage) > 1) {
+                        searchParams.set('page', savedPage);
+                        window.location.search = searchParams.toString();
+                    }
+                }
+                
+                // Update all "Quay lại" and Index links to include saved page
+                var savedPage = sessionStorage.getItem(controllerKey);
+                if (savedPage && parseInt(savedPage) > 1) {
+                    document.querySelectorAll('a').forEach(function(link) {
+                        var href = link.getAttribute('href');
+                        if (href && href.indexOf('page=') === -1) {
+                            // Check if link goes to Index of same controller
+                            var hrefLower = href.toLowerCase();
+                            if (hrefLower.indexOf('/' + controllerMatch[1].toLowerCase()) > -1 &&
+                                (hrefLower.endsWith('/index') || hrefLower.match(/\/[^\/]+_65133373\/?$/))) {
+                                link.setAttribute('href', href + (href.indexOf('?') > -1 ? '&' : '?') + 'page=' + savedPage);
+                            }
+                        }
+                    });
+                }
+            }
+        })();
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

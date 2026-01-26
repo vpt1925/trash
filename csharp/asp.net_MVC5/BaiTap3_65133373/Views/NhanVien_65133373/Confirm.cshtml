@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "Confirm";
+    Layout = null;
+}
+@model BaiTap3_65133373.Models.InfoModel
+
+<h2>THÔNG TIN THÀNH VIÊN ĐÃ ĐĂNG KÝ</h2>
+@ViewBag.Avatar
+<table>
+    <tr>
+        <td>@Html.DisplayNameFor(m => m.EmpID)</td>
+        <td>@ViewBag.EmpID</td>
+    </tr>
+    <tr>
+        <td>@Html.DisplayNameFor(m => m.Name)</td>
+        <td>@ViewBag.Name</td>
+    </tr>
+    <tr>
+        <td>@Html.DisplayNameFor(m => m.BirthOfDate)</td>
+        <td>@ViewBag.BirthOfDate</td>
+    </tr>
+    <tr>
+        <td>@Html.DisplayNameFor(m => m.Email)</td>
+        <td>@ViewBag.Email</td>
+    </tr>
+    <tr>
+        <td>@Html.DisplayNameFor(m => m.Password)</td>
+        <td>@ViewBag.Password </td>
+    </tr>
+    <tr>
+        <td>@Html.DisplayNameFor(m => m.Department)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center">
+            <a href="#"></a>
+        </td>
+    </tr>
+</table>

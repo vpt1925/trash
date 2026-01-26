@@ -1,0 +1,125 @@
+@model QLCHTH_65133373.Models.ViewModels.KhuyenMaiViewModel
+@{
+    ViewBag.Title = "Chi tiết khuyến mãi";
+    var now = DateTime.Now;
+    string statusClass = "";
+    string statusText = "";
+    
+    if (now < Model.NgayBatDau)
+    {
+        statusClass = "bg-info";
+        statusText = "Chưa bắt đầu";
+    }
+    else if (now >= Model.NgayBatDau && now <= Model.NgayKetThuc)
+    {
+        statusClass = "bg-success";
+        statusText = "Đang chạy";
+    }
+    else
+    {
+        statusClass = "bg-secondary";
+        statusText = "Đã kết thúc";
+    }
+}
+
+<h1 class="mt-4"><i class="fas fa-tags me-2"></i>Chi tiết khuyến mãi</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard_65133373")">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="@Url.Action("Index")">Khuyến mãi</a></li>
+    <li class="breadcrumb-item active">Chi tiết</li>
+</ol>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-info-circle me-1"></i>Thông tin khuyến mãi</div>
+            <div class="card-body">
+                <table class="table table-borderless mb-0">
+                    <tr>
+                        <th style="width: 40%;">Mã KM:</th>
+                        <td><strong>@Model.MaKM</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Tên:</th>
+                        <td>@Model.TenKM</td>
+                    </tr>
+                    <tr>
+                        <th>Mô tả:</th>
+                        <td>@(string.IsNullOrEmpty(Model.MoTa) ? "-" : Model.MoTa)</td>
+                    </tr>
+                    <tr>
+                        <th>Ngày bắt đầu:</th>
+                        <td>@Model.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                    <tr>
+                        <th>Ngày kết thúc:</th>
+                        <td>@Model.NgayKetThuc.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                    <tr>
+                        <th>Trạng thái:</th>
+                        <td><span class="badge @statusClass">@statusText</span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="d-grid gap-2">
+            @if (now < Model.NgayKetThuc)
+            {
+                <a href="@Url.Action("Edit", new { id = Model.MaKM })" class="btn btn-warning">
+                    <i class="fas fa-edit me-1"></i>Chỉnh sửa
+                </a>
+            }
+            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Quay lại danh sách
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-boxes me-1"></i>Sản phẩm áp dụng (@Model.ChiTietKhuyenMais.Count sản phẩm)</div>
+            <div class="card-body">
+                @if (Model.ChiTietKhuyenMais.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 60px;">#</th>
+                                    <th style="width: 80px;">Mã SP</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th class="text-end" style="width: 120px;">Giá gốc</th>
+                                    <th class="text-center" style="width: 100px;">Giảm</th>
+                                    <th class="text-end" style="width: 120px;">Giá KM</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ int stt = 0; }
+                                @foreach (var ct in Model.ChiTietKhuyenMais)
+                                {
+                                    stt++;
+                                    <tr>
+                                        <td class="text-center">@stt</td>
+                                        <td>@ct.MaSP</td>
+                                        <td>@ct.TenSP</td>
+                                        <td class="text-end text-muted text-decoration-line-through">@ct.GiaGoc.ToString("N0") đ</td>
+                                        <td class="text-center"><span class="badge bg-danger">-@ct.PhanTramGiam%</span></td>
+                                        <td class="text-end fw-bold text-success">@ct.GiaSauGiam.ToString("N0") đ</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-box-open fa-2x mb-2"></i>
+                        <p>Chưa có sản phẩm nào được áp dụng</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

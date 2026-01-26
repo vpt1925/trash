@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="css/hehe.css">
+</head>
+<body>
+    <div class="part1">
+        <p>Vi Phúc Thịnh<br/>65133373<br/>65.CNTT-3</p>
+    </div>
+    <div class="part2">
+        <div class="topic">
+            <button class="topic-toggle" onclick="toggleTopic(this)">📁 Chủ đề 2</button>
+            <div class="exercise-list">
+                <a href="chude2/bai1/index.php" class="exercise-link">Bài 1</a>
+                <a href="chude2/bai2/index.php" class="exercise-link">Bài 2</a>
+                <a href="chude2/bai3/index.php" class="exercise-link">Bài 3</a>
+                <a href="chude2/bai4/index.php" class="exercise-link">Bài 4</a>
+                <a href="chude2/bai5/index.php" class="exercise-link">Bài 5</a>
+                <a href="chude2/bai6/index.php" class="exercise-link">Bài 6</a>
+            </div>
+        </div>
+
+        <div class="topic">
+            <button class="topic-toggle" onclick="toggleTopic(this)">📁 Chủ đề 3</button>
+            <div class="exercise-list">
+                <a href="chude3/bai1/index.php" class="exercise-link">Bài 1</a>
+                <a href="chude3/bai2/index.php" class="exercise-link">Bài 2</a>
+                <a href="chude3/bai3/pheptinh.php" class="exercise-link">Bài 3</a>
+                <a href="chude3/bai4/nhapThongtin.html" class="exercise-link">Bài 4</a>
+            </div>
+        </div>
+
+        <div class="topic">
+            <button class="topic-toggle" onclick="toggleTopic(this)">📁 Chủ đề 4</button>
+            <div class="exercise-list">
+                <a href="chude4/bai2/mang_nam_nhuan.php" class="exercise-link">Bài 2: Mảng năm nhuận</a>
+                <a href="chude4/bai3/mang_nam_am_lich.php" class="exercise-link">Bài 3: Mảng năm âm lịch</a>
+                <a href="chude4/bai4/tong_day_so.php" class="exercise-link">Bài 4: Tổng dãy số</a>
+                <a href="chude4/bai5/mang_phat_sinh_tinh_toan.php" class="exercise-link">Bài 5: Mảng phát sinh và tính toán</a>
+                <a href="chude4/bai1_mang2chieu/index.php" class="exercise-link">Bài 1: Mảng 2 chiều</a>
+                <a href="chude4/bai1_hdt/index.php" class="exercise-link">Bài 1: Hướng đối tượng</a>
+            </div>
+        </div>
+
+        <div class="topic">
+            <button class="topic-toggle" onclick="toggleTopic(this)">📁 Chủ đề 6: Quản lý bán sữa</button>
+            <div class="exercise-list">
+                <a href="quanlybansua/index.php" class="exercise-link">Trang chủ</a>
+            </div>
+        </div>
+
+        <div class="topic">
+            <button class="topic-toggle" onclick="toggleTopic(this)">📁 Chủ đề 7</button>
+            <div class="exercise-list">
+                <a href="chude7/uploadForm.html" class="exercise-link">Gửi file</a>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+        function toggleTopic(button) {
+            const exerciseList = button.nextElementSibling;
+            exerciseList.classList.toggle('show');
+        }
+    </script>
+</html>

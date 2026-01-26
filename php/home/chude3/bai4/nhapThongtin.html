@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="css/hehe.css">
+</head>
+<body>
+    <div id="container_">
+        <form action="xulyThongtin.php" method="post">
+            <fieldset>
+                <legend>Enter your infomation</legend>
+                <table>
+                    <tr>
+                        <td>Họ tên:</td>
+                        <td>
+                            <input type="text" name="name" id="name_">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Địa chỉ:</td>
+                        <td><input type="text" name="address" id="address_" value=></td>
+                    </tr>
+                    <tr>
+                        <td>Số điện thoại:</td>
+                        <td><input type="text" name="phone_number" id="phone_number_"></td>
+                    </tr>
+                    <tr>
+                        <td>Giới tính:</td>
+                        <td>
+                            <input type="radio" name="gender" id="gender_male_" value="M" checked>
+                            <label for="gender_male_">Male</label>
+                            <input type="radio" name="gender" id="gender_female_" value="F">
+                            <label for="gender_female_">Female</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Quốc tịch:</td>
+                        <td>
+                            <select name="nationally" id="nationally_">
+                                <option value="VIETNAM"selected>Việt Nam</option>
+                                <option value="LAOS" >Lào</option>
+                                <option value="CAMBODIA">Campuchia</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Các môn đã học:</td>
+                        <td>
+                            <input type="checkbox" name="sub1" id="sub1_" value="php_mysql">PHP & MySQL 
+                            <input type="checkbox" name="sub2" id="sub2_" value="cs">C# 
+                            <input type="checkbox" name="sub3" id="sub3_" value="xml">XML 
+                            <input type="checkbox" name="sub4" id="sub4_" value="python">Python 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Ghi chú:</td>
+                        <td>
+                            <textarea name="comment" id="comment_"></textarea>
+                        </td>
+                    </tr>
+                </table>
+                <input type="submit" name="submit" value="Gửi">
+                <input type="reset" name="reset" value="Xóa">
+            </fieldset>
+        </form>
+    </div>
+    <a href="../../index.html">Home</a>
+</body>
+</html>

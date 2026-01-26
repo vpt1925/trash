@@ -1,0 +1,307 @@
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<h1 class="mt-4">
+    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Tổng quan hệ thống</li>
+</ol>
+
+<!-- Thống kê tổng quan -->
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card bg-primary text-white h-100 stat-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-white-50 small text-uppercase">Sản phẩm</div>
+                        <div class="h2 mb-0">@ViewBag.TongSanPham</div>
+                    </div>
+                    <i class="fas fa-box fa-2x text-white-50"></i>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="@Url.Action("Index", "SanPham_65133373")">Xem chi tiết</a>
+                <i class="fas fa-angle-right text-white"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card bg-success text-white h-100 stat-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-white-50 small text-uppercase">Hóa đơn hôm nay</div>
+                        <div class="h2 mb-0">@ViewBag.SoHoaDonHomNay</div>
+                    </div>
+                    <i class="fas fa-file-invoice-dollar fa-2x text-white-50"></i>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="@Url.Action("Index", "HoaDon_65133373")">Xem chi tiết</a>
+                <i class="fas fa-angle-right text-white"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card bg-warning text-white h-100 stat-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-white-50 small text-uppercase">Doanh thu hôm nay</div>
+                        <div class="h4 mb-0">@(((decimal)ViewBag.DoanhThuHomNay).ToString("N0")) đ</div>
+                    </div>
+                    <i class="fas fa-coins fa-2x text-white-50"></i>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="@Url.Action("Index", "ThongKe_65133373")">Xem thống kê</a>
+                <i class="fas fa-angle-right text-white"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card bg-info text-white h-100 stat-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-white-50 small text-uppercase">Khuyến mãi đang chạy</div>
+                        <div class="h2 mb-0">@ViewBag.KhuyenMaiDangDienRa</div>
+                    </div>
+                    <i class="fas fa-tags fa-2x text-white-50"></i>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="@Url.Action("Index", "KhuyenMai_65133373")">Xem chi tiết</a>
+                <i class="fas fa-angle-right text-white"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thống kê tháng -->
+<div class="row">
+    <div class="col-xl-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-light">
+                <i class="fas fa-calendar-alt me-2"></i>Thống kê tháng này
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="h5 mb-0 text-primary">@ViewBag.SoHoaDonThangNay</div>
+                        <small class="text-muted">Hóa đơn</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="h5 mb-0 text-success">@(((decimal)ViewBag.DoanhThuThangNay).ToString("N0")) đ</div>
+                        <small class="text-muted">Doanh thu</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-light">
+                <i class="fas fa-database me-2"></i>Thông tin hệ thống
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="h5 mb-0 text-info">@ViewBag.TongDanhMuc</div>
+                        <small class="text-muted">Danh mục</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="h5 mb-0 text-warning">@ViewBag.TongNhaCungCap</div>
+                        <small class="text-muted">Nhà cung cấp</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="h5 mb-0 text-secondary">@ViewBag.TongTaiKhoan</div>
+                        <small class="text-muted">Tài khoản</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Sản phẩm sắp hết hàng -->
+    <div class="col-xl-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-danger text-white">
+                <i class="fas fa-exclamation-triangle me-2"></i>Sản phẩm sắp hết hàng
+            </div>
+            <div class="card-body p-0">
+                @{
+                    var sanPhamSapHet = ViewBag.SanPhamSapHet as List<QLCHTH_65133373.Models.SanPham>;
+                }
+                @if (sanPhamSapHet != null && sanPhamSapHet.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mã SP</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th class="text-end">Tồn kho</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sp in sanPhamSapHet)
+                                {
+                                    <tr>
+                                        <td>@sp.MaSP</td>
+                                        <td>
+                                            <a href="@Url.Action("Edit", "SanPham_65133373", new { id = sp.MaSP })">
+                                                @sp.TenSP
+                                            </a>
+                                        </td>
+                                        <td class="text-end">
+                                            @if (sp.SoLuongTon == 0)
+                                            {
+                                                <span class="badge bg-danger">Hết hàng</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning text-dark">@sp.SoLuongTon</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-check-circle fa-2x mb-2 text-success"></i>
+                        <p class="mb-0">Tất cả sản phẩm đều còn hàng</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Top sản phẩm bán chạy -->
+    <div class="col-xl-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <i class="fas fa-trophy me-2"></i>Top sản phẩm bán chạy tháng này
+            </div>
+            <div class="card-body p-0">
+                @{
+                    var topSanPham = ViewBag.TopSanPham as IEnumerable<QLCHTH_65133373.Models.ViewModels.TopSanPhamViewModel>;
+                }
+                @if (topSanPham != null && topSanPham.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th class="text-end">Đã bán</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{int stt = 1;}
+                                @foreach (var sp in topSanPham)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (stt == 1)
+                                            {
+                                                <i class="fas fa-medal text-warning"></i>
+                                            }
+                                            else if (stt == 2)
+                                            {
+                                                <i class="fas fa-medal text-secondary"></i>
+                                            }
+                                            else if (stt == 3)
+                                            {
+                                                <i class="fas fa-medal" style="color: #cd7f32;"></i>
+                                            }
+                                            else
+                                            {
+                                                @stt
+                                            }
+                                        </td>
+                                        <td>@sp.TenSP</td>
+                                        <td class="text-end"><span class="badge bg-success">@sp.SoLuong</span></td>
+                                    </tr>
+                                    stt++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-chart-line fa-2x mb-2"></i>
+                        <p class="mb-0">Chưa có dữ liệu bán hàng</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hóa đơn gần nhất -->
+<div class="card mb-4">
+    <div class="card-header bg-light">
+        <i class="fas fa-history me-2"></i>Hóa đơn gần nhất
+    </div>
+    <div class="card-body p-0">
+        @{
+            var hoaDonGanNhat = ViewBag.HoaDonGanNhat as List<QLCHTH_65133373.Models.HoaDon>;
+        }
+        @if (hoaDonGanNhat != null && hoaDonGanNhat.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mã HĐ</th>
+                            <th>Thời gian</th>
+                            <th>Nhân viên</th>
+                            <th class="text-end">Tổng tiền</th>
+                            <th class="text-end">Giảm giá</th>
+                            <th class="text-end">Thanh toán</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var hd in hoaDonGanNhat)
+                        {
+                            <tr>
+                                <td><strong>#@hd.MaHD</strong></td>
+                                <td>@hd.NgayBan.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@hd.TaiKhoan.TenHienThi</td>
+                                <td class="text-end">@hd.TongTien.ToString("N0") đ</td>
+                                <td class="text-end text-danger">-@hd.TongGiamGia.ToString("N0") đ</td>
+                                <td class="text-end text-success fw-bold">@hd.ThanhToan.ToString("N0") đ</td>
+                                <td class="text-end">
+                                    <a href="@Url.Action("Details", "HoaDon_65133373", new { id = hd.MaHD })" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-4 text-muted">
+                <i class="fas fa-inbox fa-2x mb-2"></i>
+                <p class="mb-0">Chưa có hóa đơn nào</p>
+            </div>
+        }
+    </div>
+</div>

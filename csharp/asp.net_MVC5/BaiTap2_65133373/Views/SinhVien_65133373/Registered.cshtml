@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "Registered";
+    Layout = null;
+}
+
+<h1>THÔNG TIN SINH VIÊN ĐÃ ĐĂNG KÝ</h1>
+<table>
+    <tr>
+        <td>Mã sinh viên:</td>
+        <td>@ViewBag.Id</td>
+    </tr>
+    <tr>
+        <td>Họ tên:</td>
+        <td>@ViewBag.Name</td>
+    </tr>
+    <tr>
+        <td>Điểm:</td>
+        <td>@ViewBag.Marks</td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center">
+            <a href="@Request.UrlReferrer">Quay lại</a>
+        </td>
+    </tr>
+</table>

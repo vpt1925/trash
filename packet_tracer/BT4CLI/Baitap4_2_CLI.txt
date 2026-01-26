@@ -1,0 +1,42 @@
+!RTA
+en
+conf t
+int se0/0
+	ip addr 192.168.2.34 255.255.255.224
+	no shut
+int se0/1
+	ip addr 10.10.10.2 255.255.255.252
+	no shut
+int fa0/0
+	ip addr 192.168.2.65 255.255.255.224
+	no shut
+router rip
+	version 2
+	network 192.168.2.0
+	def ori
+
+ip route 0.0.0.0 0.0.0.0 10.10.10.1
+
+!RTB
+en
+conf t
+int se0/0
+	ip addr 192.168.2.33 255.255.255.224
+	no shut
+int fa0/0
+	ip addr 192.168.2.1 255.255.255.224
+	no shut
+router rip
+	version 2
+	network 192.168.2.0
+
+!RTC
+en
+conf t
+int se0/0
+	ip addr 10.10.10.1 255.255.255.252
+	no shut
+int fa0/0
+	ip addr 203.162.162.1
+	no shut
+ip route 192.168.2.0 255.255.255.0 10.10.10.2

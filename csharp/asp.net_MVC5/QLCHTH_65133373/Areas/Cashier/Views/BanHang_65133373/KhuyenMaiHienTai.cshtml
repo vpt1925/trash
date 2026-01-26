@@ -1,0 +1,72 @@
+@{
+    ViewBag.Title = "Khuyến mãi hiện tại";
+}
+
+<h1 class="mt-4">
+    <i class="fas fa-tags me-2"></i>Khuyến mãi đang áp dụng
+</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index", "BanHang_65133373")">Bán hàng</a></li>
+    <li class="breadcrumb-item active">Khuyến mãi</li>
+</ol>
+
+<div id="promotionList">
+    <div class="text-center py-5">
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+        <p class="mt-2">Đang tải...</p>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            loadPromotions();
+        });
+        
+        function loadPromotions() {
+            $.get('@Url.Action("GetKhuyenMaiHienTai", "BanHang_65133373", new { area = "Cashier" })', function(data) {
+                if (data.length === 0) {
+                    $('#promotionList').html('<div class="text-center py-5 text-muted"><i class="fas fa-tag fa-3x mb-3"></i><p>Không có khuyến mãi nào đang áp dụng</p></div>');
+                    return;
+                }
+                
+                var html = '';
+                data.forEach(function(km) {
+                    html += '<div class="card mb-4">';
+                    html += '<div class="card-header bg-danger text-white">';
+                    html += '<i class="fas fa-tags me-1"></i>' + km.tenKhuyenMai;
+                    html += '<span class="float-end"><small>' + km.ngayBatDau + ' - ' + km.ngayKetThuc + '</small></span>';
+                    html += '</div>';
+                    html += '<div class="card-body">';
+                    if (km.moTa) {
+                        html += '<p class="text-muted">' + km.moTa + '</p>';
+                    }
+                    html += '<div class="table-responsive">';
+                    html += '<table class="table table-bordered table-hover mb-0">';
+                    html += '<thead class="table-light"><tr>';
+                    html += '<th>Mã SP</th><th>Tên sản phẩm</th><th class="text-end">Giá gốc</th><th class="text-center">Giảm</th><th class="text-end">Giá KM</th>';
+                    html += '</tr></thead><tbody>';
+                    
+                    km.chiTiet.forEach(function(ct) {
+                        var giaSauGiam = Math.round(ct.giaGoc * (100 - ct.phanTramGiam) / 100);
+                        html += '<tr>';
+                        html += '<td>' + ct.maSanPham + '</td>';
+                        html += '<td>' + ct.tenSanPham + '</td>';
+                        html += '<td class="text-end text-muted text-decoration-line-through">' + formatNumber(ct.giaGoc) + ' đ</td>';
+                        html += '<td class="text-center"><span class="badge bg-danger">-' + ct.phanTramGiam + '%</span></td>';
+                        html += '<td class="text-end fw-bold text-success">' + formatNumber(giaSauGiam) + ' đ</td>';
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table></div></div></div>';
+                });
+                
+                $('#promotionList').html(html);
+            });
+        }
+        
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+    </script>
+}

@@ -1,0 +1,54 @@
+@model QLCHTH_65133373.Models.ViewModels.TaiKhoanViewModel
+@{
+    ViewBag.Title = "Đổi mật khẩu";
+}
+
+<h1 class="mt-4"><i class="fas fa-key me-2"></i>Đổi mật khẩu</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index", "BanHang_65133373")">Bán hàng</a></li>
+    <li class="breadcrumb-item active">Đổi mật khẩu</li>
+</ol>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <i class="fas fa-lock me-1"></i>Thay đổi mật khẩu
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu hiện tại <span class="text-danger">*</span></label>
+                        <input type="password" name="MatKhauCu" class="form-control" required placeholder="Nhập mật khẩu hiện tại" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu mới <span class="text-danger">*</span></label>
+                        @Html.PasswordFor(m => m.MatKhau, new { @class = "form-control", placeholder = "Nhập mật khẩu mới", required = "required" })
+                        @Html.ValidationMessageFor(m => m.MatKhau, "", new { @class = "text-danger small" })
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Xác nhận mật khẩu mới <span class="text-danger">*</span></label>
+                        @Html.PasswordFor(m => m.XacNhanMatKhau, new { @class = "form-control", placeholder = "Nhập lại mật khẩu mới", required = "required" })
+                        @Html.ValidationMessageFor(m => m.XacNhanMatKhau, "", new { @class = "text-danger small" })
+                    </div>
+                    
+                    <hr />
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="@Url.Action("Index", "BanHang_65133373")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Quay lại
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-key me-1"></i>Đổi mật khẩu
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

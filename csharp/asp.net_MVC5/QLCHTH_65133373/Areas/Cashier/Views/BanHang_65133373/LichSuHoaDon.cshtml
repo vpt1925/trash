@@ -1,0 +1,85 @@
+@model QLCHTH_65133373.Models.ViewModels.PagedList<QLCHTH_65133373.Models.ViewModels.HoaDonViewModel>
+@{
+    ViewBag.Title = "Lịch sử hóa đơn";
+}
+
+<h1 class="mt-4">
+    <i class="fas fa-history me-2"></i>Lịch sử hóa đơn của tôi
+</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index", "BanHang_65133373")">Bán hàng</a></li>
+    <li class="breadcrumb-item active">Lịch sử</li>
+</ol>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>Danh sách hóa đơn đã lập
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3 mb-4">
+            <div class="col-md-3">
+                <label class="form-label small">Ngày</label>
+                <input type="date" name="ngay" class="form-control" value="@ViewBag.Ngay" />
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-outline-primary me-2"><i class="fas fa-filter me-1"></i>Lọc</button>
+                <a href="@Url.Action("LichSuHoaDon", new { ngay = (string)null })" class="btn btn-outline-secondary">Xem tất cả</a>
+            </div>
+        </form>
+
+        @if (Model.Items.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 80px;">Mã HĐ</th>
+                            <th>Ngày lập</th>
+                            <th class="text-end">Tổng tiền</th>
+                            <th class="text-end">Giảm giá</th>
+                            <th class="text-end">Thành tiền</th>
+                            <th style="width: 120px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td><strong>@item.MaHD</strong></td>
+                                <td>@item.NgayBan.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="text-end">@item.TongTien.ToString("N0") đ</td>
+                                <td class="text-end text-danger">-@item.TongGiamGia.ToString("N0") đ</td>
+                                <td class="text-end fw-bold text-success">@item.ThanhToan.ToString("N0") đ</td>
+                                <td>
+                                    <a href="@Url.Action("ChiTietHoaDon", new { id = item.MaHD })" class="btn btn-primary btn-action" title="Xem chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="@Url.Action("Print", new { id = item.MaHD })" class="btn btn-info btn-action" title="In hóa đơn" target="_blank">
+                                        <i class="fas fa-print"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr class="fw-bold">
+                            <td colspan="2" class="text-center">Tổng cộng (@Model.TotalCount hóa đơn)</td>
+                            <td class="text-end">@Model.Items.Sum(x => x.TongTien).ToString("N0") đ</td>
+                            <td class="text-end text-danger">-@Model.Items.Sum(x => x.TongGiamGia).ToString("N0") đ</td>
+                            <td class="text-end text-success">@Model.Items.Sum(x => x.ThanhToan).ToString("N0") đ</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            @Html.Partial("~/Areas/Admin/Views/Shared/_Pagination.cshtml", Model)
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Không tìm thấy hóa đơn nào</p>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+@model BaiTap3_65133373.Models.InfoModel
+
+<form action="" method="post" enctype="multipart/form-data">
+    <table>
+        <tr>
+            <td>@Html.LabelFor(m => m.EmpID)</td>
+            <td>@Html.TextBoxFor(m => m.EmpID)</td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(m => m.Name)</td>
+            <td>@Html.TextBoxFor(m => m.Name)</td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(m => m.BirthOfDate)</td>
+            <td>@Html.EditorFor(m => m.BirthOfDate)</td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(m => m.Email)</td>
+            <td>@Html.TextBoxFor(m => m.Email)</td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(m => m.Password)</td>
+            <td>@Html.PasswordFor(m => m.Password) </td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(m => m.Department)</td>
+            <td>@Html.TextBoxFor(m => m.Department)</td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <input type="file" name="Avatar"/>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <input type="submit" name="Register" />
+            </td>
+        </tr>
+    </table>
+</form>

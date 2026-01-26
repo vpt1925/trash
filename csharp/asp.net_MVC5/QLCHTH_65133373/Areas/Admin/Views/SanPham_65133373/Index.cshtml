@@ -1,0 +1,162 @@
+@model QLCHTH_65133373.Models.ViewModels.PagedList<QLCHTH_65133373.Models.ViewModels.SanPhamViewModel>
+@{
+    ViewBag.Title = "Quản lý sản phẩm";
+}
+
+<h1 class="mt-4">
+    <i class="fas fa-box me-2"></i>Quản lý sản phẩm
+</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard_65133373")">Dashboard</a></li>
+    <li class="breadcrumb-item active">Sản phẩm</li>
+</ol>
+
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <i class="fas fa-table me-1"></i>
+            Danh sách sản phẩm
+        </div>
+        <a href="@Url.Action("Create")" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus me-1"></i>Thêm sản phẩm
+        </a>
+    </div>
+    <div class="card-body">
+        <!-- Bộ lọc -->
+        <form method="get" class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" name="search" class="form-control" placeholder="Tìm theo mã hoặc tên..." value="@ViewBag.Search" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                @Html.DropDownList("danhMuc", (SelectList)ViewBag.DanhMucs, "-- Tất cả danh mục --", new { @class = "form-select" })
+            </div>
+            <div class="col-md-3">
+                @Html.DropDownList("nhaCungCap", (SelectList)ViewBag.NhaCungCaps, "-- Tất cả NCC --", new { @class = "form-select" })
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-filter me-1"></i>Lọc
+                </button>
+            </div>
+        </form>
+
+        @if (Model.Items.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 70px;">Mã SP</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th>Nhà cung cấp</th>
+                            <th>Đơn vị</th>
+                            <th class="text-end">Đơn giá</th>
+                            <th class="text-center">Tồn kho</th>
+                            <th style="width: 150px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td><strong>@item.MaSP</strong></td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.AnhSanPham))
+                                    {
+                                        <img src="~/Content/images/products/@item.AnhSanPham" alt="@item.TenSP" style="width: 30px; height: 30px; object-fit: cover;" class="me-2 rounded" />
+                                    }
+                                    @item.TenSP
+                                </td>
+                                <td><span class="badge bg-info">@item.TenDanhMuc</span></td>
+                                <td>@item.TenNCC</td>
+                                <td>@item.DonViTinh</td>
+                                <td class="text-end">@item.DonGia.ToString("N0") đ</td>
+                                <td class="text-center">
+                                    @if (item.SoLuongTon == 0)
+                                    {
+                                        <span class="badge bg-danger">Hết hàng</span>
+                                    }
+                                    else if (item.SoLuongTon < 10)
+                                    {
+                                        <span class="badge bg-warning text-dark">@item.SoLuongTon</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">@item.SoLuongTon</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="@Url.Action("Details", new { id = item.MaSP })" class="btn btn-info btn-action" title="Xem">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="@Url.Action("Edit", new { id = item.MaSP })" class="btn btn-warning btn-action" title="Sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-danger btn-action" title="Xóa" onclick="confirmDelete(@item.MaSP, '@item.TenSP')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Phân trang -->
+            @Html.Partial("_Pagination", Model)
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Không tìm thấy sản phẩm nào</p>
+                <a href="@Url.Action("Create")" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>Thêm sản phẩm đầu tiên
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal Xác nhận xóa -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-exclamation-triangle text-warning me-2"></i>Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa sản phẩm "<strong id="deleteName"></strong>"?</p>
+                <p class="text-muted small mb-0">Hành động này không thể hoàn tác.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                @using (Html.BeginForm("Delete", "SanPham_65133373", FormMethod.Post, new { id = "deleteForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="deleteId" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>Xóa
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function confirmDelete(id, name) {
+            document.getElementById('deleteId').value = id;
+            document.getElementById('deleteName').textContent = name;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+    </script>
+}

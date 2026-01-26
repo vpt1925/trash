@@ -1,0 +1,42 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Không có quyền truy cập</title>
+    <link href="~/Content/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-lg-6 text-center">
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <i class="fas fa-ban text-danger" style="font-size: 5rem;"></i>
+                        <h1 class="mt-4 mb-3">Không có quyền truy cập</h1>
+                        <p class="lead text-muted mb-4">
+                            Bạn không có quyền truy cập vào trang này. 
+                            Vui lòng liên hệ quản trị viên nếu bạn cho rằng đây là lỗi.
+                        </p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Quay lại
+                            </a>
+                            <a href="@Url.Action("Logout", "Account_65133373")" class="btn btn-primary">
+                                <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/bootstrap.bundle.js"></script>
+</body>
+</html>

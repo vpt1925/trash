@@ -1,0 +1,133 @@
+@model QLCHTH_65133373.Models.ViewModels.SanPhamViewModel
+@{
+    ViewBag.Title = "Chỉnh sửa sản phẩm";
+}
+
+<h1 class="mt-4">
+    <i class="fas fa-edit me-2"></i>Chỉnh sửa sản phẩm
+</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard_65133373")">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="@Url.Action("Index")">Sản phẩm</a></li>
+    <li class="breadcrumb-item active">Chỉnh sửa</li>
+</ol>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-box me-1"></i>
+        Thông tin sản phẩm - Mã: <strong>@Model.MaSP</strong>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("Edit", "SanPham_65133373", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.MaSP)
+            @Html.HiddenFor(m => m.AnhSanPham)
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
+                            @Html.TextBoxFor(m => m.TenSP, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.TenSP, "", new { @class = "text-danger small" })
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Danh mục <span class="text-danger">*</span></label>
+                            @Html.DropDownListFor(m => m.MaDanhMuc, (SelectList)ViewBag.DanhMucs, "-- Chọn danh mục --", new { @class = "form-select" })
+                            @Html.ValidationMessageFor(m => m.MaDanhMuc, "", new { @class = "text-danger small" })
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nhà cung cấp <span class="text-danger">*</span></label>
+                            @Html.DropDownListFor(m => m.MaNCC, (SelectList)ViewBag.NhaCungCaps, "-- Chọn nhà cung cấp --", new { @class = "form-select" })
+                            @Html.ValidationMessageFor(m => m.MaNCC, "", new { @class = "text-danger small" })
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Đơn vị tính <span class="text-danger">*</span></label>
+                            @Html.TextBoxFor(m => m.DonViTinh, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.DonViTinh, "", new { @class = "text-danger small" })
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Đơn giá (VNĐ) <span class="text-danger">*</span></label>
+                            @Html.TextBoxFor(m => m.DonGia, "{0:0}", new { @class = "form-control", type = "number", min = "1" })
+                            @Html.ValidationMessageFor(m => m.DonGia, "", new { @class = "text-danger small" })
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Số lượng tồn <span class="text-danger">*</span></label>
+                            @Html.TextBoxFor(m => m.SoLuongTon, new { @class = "form-control", type = "number", min = "0" })
+                            @Html.ValidationMessageFor(m => m.SoLuongTon, "", new { @class = "text-danger small" })
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        @Html.TextAreaFor(m => m.MoTaSP, new { @class = "form-control", rows = "3" })
+                        @Html.ValidationMessageFor(m => m.MoTaSP, "", new { @class = "text-danger small" })
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Ảnh sản phẩm</label>
+                        <input type="file" name="anhSanPham" id="anhSanPham" class="form-control" accept="image/*" onchange="previewImage(this)" />
+                        <small class="text-muted">Để trống nếu không muốn thay đổi ảnh</small>
+                    </div>
+                    <div class="text-center">
+                        @if (!string.IsNullOrEmpty(Model.AnhSanPham))
+                        {
+                            <img id="imagePreview" src="~/Content/images/products/@Model.AnhSanPham" alt="@Model.TenSP" class="img-fluid rounded border" style="max-height: 200px;" />
+                            <div id="noImage" class="border rounded p-4 text-muted" style="display: none;">
+                                <i class="fas fa-image fa-3x mb-2"></i>
+                                <p class="mb-0">Chưa có ảnh</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <img id="imagePreview" src="" alt="Preview" class="img-fluid rounded border" style="max-height: 200px; display: none;" />
+                            <div id="noImage" class="border rounded p-4 text-muted">
+                                <i class="fas fa-image fa-3x mb-2"></i>
+                                <p class="mb-0">Chưa có ảnh</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            <hr />
+            
+            <div class="d-flex justify-content-between">
+                <a href="@Url.Action("Index")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Quay lại
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i>Cập nhật
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function previewImage(input) {
+            var preview = document.getElementById('imagePreview');
+            var noImage = document.getElementById('noImage');
+            
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    noImage.style.display = 'none';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

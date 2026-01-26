@@ -1,0 +1,88 @@
+*{
+    margin: 0; 
+    padding: 0;
+    box-sizing: border-box;
+    text-align: justify;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12pt;
+}
+
+body{
+    width: 100%;
+    height: 100vh;
+    padding: 5px 5px;
+}
+
+#container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 5px 5px;
+    border: 1px solid black;
+    border-radius: 20px;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: auto;
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 50px 50px;
+    background-color: pink;  
+}
+
+#title{
+    margin: 10px auto;
+}
+
+#content{
+    display: flex;
+    flex-direction: row;
+}
+
+#duong{
+    width: 200px;
+    padding: 10px 20px;
+    border: 1px solid black;
+    border-radius: 20px;
+}
+
+#chuyen{
+    width: 100px;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+#am{
+    width: 200px;
+    padding: 10px 20px;
+    border: 1px solid black;
+    border-radius: 20px;
+}
+
+form input[type="text"]{
+    width: 100%;
+    margin: 10px 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+form input[type="submit"]{
+    width: 50px;
+    height: 30px;
+    margin: 10px auto;
+    border-radius: 20px;
+    text-align: center;
+}
+
+#hinh_anh{
+    margin-top: 20px;
+    border-radius: 10px;
+}
